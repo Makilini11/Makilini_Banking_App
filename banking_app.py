@@ -235,7 +235,7 @@ def Admin_menu():
 if __name__ == "__main__":
     if Admin_login():
         Admin_menu()
-
+#close app
 
 
 
