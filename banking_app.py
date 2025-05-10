@@ -1,6 +1,7 @@
 import os
-
-accounts=[]
+import random
+import datetime
+accounts={}
 #admin login 
 def Admin_login():
     while True:
@@ -76,56 +77,83 @@ def create_customers():
 #================================================================================================================================
 
 #create next account id
-def create_next_account_id():
-    if not accounts:
-        return "A001"
-    else:
-        last_id = accounts[-1]['account_id']
-        next_id = int(last_id[1:]) + 1
-        return f"A{next_id:03d}"
+# def create_next_account_id():
+#     if not accounts:
+#         return "A001"
+#     else:
+#         last_id = accounts[-1]['account_id']
+#         next_id = int(last_id[1:]) + 1
+#         return f"A{next_id:03d}"
 #-----------------------------------------------------------------------------------------------------------------------------------
 #create account
+def generate_account_number():
+    """Generate a unique 8-digit account number"""
+    while True:
+       
+        account_number = str(random.randint(10000000, 99999999))
 
+        if account_number not in accounts:
+            return account_number
 
 def create_account():
-    print("==create account==")
-    customer_id=input("Enter the customer ID: ")
-    account_type=input("Enter account type(Savings/Current):")
-    if account_type not in ["Savings","Current"]:
-        print("Invalid account type")
-        return
-    try:
-        opening_balance=float(input("Enter opening balance:"))
-        account_id=create_next_account_id()
-
-        new_account = {
-            "account_id": account_id,
-            "customer_id": customer_id,
-            "account_type": account_type,
-            "opening_balance": opening_balance,
-            "status": "Active"
-            
-        }
-        accounts.append(new_account)
-        print(f'Account{account_id}created successfully!')
-    except ValueError:
-        print("Opening balance must be a valid number.")
-
+    """Function to create a new bank account"""
+    print("\n===== Create New Account =====")
+    
+    while True:
+        name = input("Enter account holder name: ").strip()
+        if name:
+            break
+        print("Name cannot be empty. Please try again.")
+    
+   
+    while True:
+        try:
+            initial_balance = float(input("Enter initial deposit amount: $"))
+            if initial_balance < 0:
+                print("Initial balance cannot be negative. Please try again.")
+            else:
+                break
+        except ValueError:
+            print("Please enter a valid amount.")
+    
+    account_number = generate_account_number()
+    
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    accounts[account_number] = {
+                                    "holder_name": name,
+                                    "balance": initial_balance,
+                                    "transactions": []
+    }
+    
+    if initial_balance > 0:
+        accounts[account_number]["transactions"].append({
+            "type": "deposit",
+            "amount": initial_balance,
+            "timestamp": timestamp,
+            "description": "Initial deposit"
+        })
+    
+    print(f"\nAccount created successfully!")
+    print(f"Account Number: {account_number}")
+    print(f"Account Holder: {name}")
+    print(f"Initial Balance: ${initial_balance:.2f}")
+    
+    return account_number
 #===============================================================================
-#create view all accounts
 def view_all_accounts():
     print("\n==== All Account Details ====")
+    
     if not accounts:
         print("No account records found.")
         return
 
-    for account in accounts:
-        print(f"Account ID     : {account['account_id']}")
-        print(f"Customer ID    : {account['customer_id']}")
-        print(f"Account Type   : {account['account_type']}")
-        print(f"Balance        : {account['opening_balance']}")
-        print(f"Status         : {account['status']}")
+    for acc_no, data in accounts():
+        print(f"Account Number : {acc_no}")
+        print(f"Holder Name    : {data['holder_name']}")
+        print(f"Balance        : ${data['balance']:.2f}")
         print("-" * 30)
+
 #===========================================================================================================================
 #deposit money
 def deposit_money():
@@ -177,19 +205,39 @@ def check_balance():
 #====================================================================================================================
 #Transaction
 def view_transaction_history():
-    account_id = input("Enter the Account ID to view transactions: ")
-    for account in accounts:
-        if account['account_id'] == account_id:
-            print(f"\n📜 Transaction History for Account {account_id}:")
-            tns_list = account.get("transactions", [])
-            if not tns_list:
-                print("No transactions found.")
-            else:
-                for tns in tns_list:
-                    print(f"- {tns}")
-            return
-    print("Account ID not found.")
+    """Function to view transaction history of an account"""
+    print("\n===== Transaction History =====")
+    
+    account_number = input("Enter account number: ").strip()
+    
+    if account_number not in accounts:
+        print("Account not found. Please check the account number.")
+        return
+    
+    transactions = accounts[account_number]["transactions"]
+    
+    if not transactions:
+        print("\nNo transactions recorded for this account.")
+        return
+    
+    print(f"\nAccount Number: {account_number}")
+    print(f"Account Holder: {accounts[account_number]['holder_name']}")
+    print(f"Current Balance: ${accounts[account_number]['balance']:.2f}")
 
+    print("\nTransaction History:")
+    print("-" * 80)
+    print("| Type       | Amount      | Date & Time           | Description        |")
+    print("-" * 80)
+    
+    for transaction in transactions:
+        transaction_type = transaction["type"].capitalize()
+        amount = f"${transaction['amount']:.2f}"
+        timestamp = transaction["timestamp"]
+        description = transaction["description"]
+        
+        print(f"| {transaction_type:<10} | {amount:<11} | {timestamp:<21} | {description:<18} |")
+    
+    print("-" * 80)
 
 
 #Admin Menu
