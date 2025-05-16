@@ -148,30 +148,36 @@ def view_all_accounts():
         print("No account records found.")
         return
 
-    for acc_no, data in accounts():
+    for acc_no, data in accounts.items():
         print(f"Account Number : {acc_no}")
         print(f"Holder Name    : {data['holder_name']}")
         print(f"Balance        : ${data['balance']:.2f}")
         print("-" * 30)
 
+
 #===========================================================================================================================
 #deposit money
 def deposit_money():
-    account_id=input("Enter the account id:")
+    account_id = input("Enter the account id: ")
+
     for account in accounts:
         if account['account_id'] == account_id:
             try:
                 amount = float(input("Enter amount to deposit: "))
                 if amount <= 0:
-                    print("Amount must be zero.")
+                    print("Amount must be greater than zero.")
                     return
+
                 account['opening_balance'] += amount
-                print(f" Deposited {amount} successfully. New Balance: {account['opening_balance']}")
+                print(f"Deposited ${amount:.2f} successfully. New Balance: ${account['opening_balance']:.2f}")
                 return
+
             except ValueError:
-                print("Amount must be a number.")
+                print("Amount must be a valid number.")
                 return
+
     print("Account ID not found.")
+
 #================================================================================================================
 #withdrawal money
 def withdraw_money():
@@ -209,7 +215,13 @@ def view_transaction_history():
     print("\n===== Transaction History =====")
     
     account_number = input("Enter account number: ").strip()
+    if not os.path.exists("accounts.json"):
+        print("Account data file not found.")
+        return
     
+    
+    with open("accounts.json", "r") as f:
+        accounts = json.load(f)
     if account_number not in accounts:
         print("Account not found. Please check the account number.")
         return
