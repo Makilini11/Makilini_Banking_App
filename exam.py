@@ -7,49 +7,76 @@ def show_current_date():
 show_current_date()
 
 # #========================================================
-#display welcome message
+# #display welcome message
 # User and customer data
 users = {
     "admin": {"password": "admin123", "role": "Admin", "customer_id": "none"},
     "karthika": {"password": "pass123", "role": "Customer", "customer_id": "C001"}
-# }
+ }
 
+customers = {
+    "C001": {"name": "Karthika Nishanth"}
+}
 
-# #         welcome_user(username, role, customer_id)
+# Authentication function
+def authenticate():
+    username = input("Username: ")
+    password = input("Password: ")
+    if username in users and users[username]["password"] == password:
+        role = users[username]["role"]
+        customer_id = users[username]["customer_id"]
+        return username, role, customer_id
+    else:
+        print("Invalid login")
+        return None, None, None
 
-# # # Start the program
-# # main()
+# # # Welcome message function
+def welcome_user(username, role, customer_id):
+    if customer_id == "none":  # Admin user
+        print(f"Welcome, {username} ({role})")
+    else:  # Customer user
+        name = customers[customer_id]["name"]
+        print(f"Welcome, {name} ({role})")
+
+# # # Main program
+def main():
+    username, role, customer_id = authenticate()
+    if username:
+        welcome_user(username, role, customer_id)
+
+# Start the program
+main()
 # # #====================================================================
 # # #upper case
-# # customers = {}
+customers = {}
 
-# # def create_account():
-# #     name = input("Enter full name: ")
-# #     # Convert name to title case
-# #     name = name.title()
+def create_account():
+    name = input("Enter full name: ")
+    # Convert name to title case
+    name = name.title()
 
-# #     # Validate name: only letters and spaces allowed
-# #     if all(char.isalpha() or char.isspace() for char in name):
-# #         # Create a new customer ID
-# #         customer_id = f"C{len(customers) + 1:03d}"
-# #         customers[customer_id] = {"name": name}
-# #         print(f"Account created for {name} with ID {customer_id}")
-# #     else:
-# #         print("Invalid name. Use letters and spaces only.")
+    # Validate name: only letters and spaces allowed
+    if all(char.isalpha() or char.isspace() for char in name):
+        # Create a new customer ID
+        customer_id = f"C{len(customers) + 1:03d}"
+        customers[customer_id] = {"name": name}
+        print(f"Account created for {name} with ID {customer_id}")
+    else:
+        print("Invalid name. Use letters and spaces only.")
 
-# Example usage
-# create_account()
+#Example usage
+create_account()
 # #========================================
 # #count total customers
 # Sample customers dictionary
-# customers = {
-#     "1001": {"name": "Alice", "balance": 500},
-#     "1002": {"name": "Bob", "balance": 300}
-# }
+customers = {
+    "1001": {"name": "Alice", "balance": 500},
+    "1002": {"name": "Bob", "balance": 300}
+}
 
-# # Function definition
-# def count_customers(customers):
-#     print(f"Total Customers: {len(customers)}")
+# Function definition
+def count_customers(customers):
+    print(f"Total Customers: {len(customers)}")
 
 count_customers(customers)
 # # #==============================================================
@@ -84,7 +111,7 @@ transactions = {
     "1003": []
 }
 
-# Function to count transactions for a specific account
+# # Function to count transactions for a specific account
 def count_transactions(account_number, transactions):
     return len(transactions.get(account_number, []))
 
@@ -96,34 +123,7 @@ while True:
     
     choice = input("Enter your choice: ")
 
-    if choice == # customers = {
-    "C001": {"name": "Karthika Nishanth"}
-}
-
-# Authentication function
-def authenticate():
-    username = input("Username: ")
-    password = input("Password: ")
-    if username in users and users[username]["password"] == password:
-        role = users[username]["role"]
-        customer_id = users[username]["customer_id"]
-        return username, role, customer_id
-    else:
-        print("Invalid login")
-        return None, None, None
-
-#Welcome message function
-def welcome_user(username, role, customer_id):
-    if customer_id == "none":  # Admin user
-        print(f"Welcome, {username} ({role})")
-    else:  # Customer user
-        name = customers[customer_id]["name"]
-        print(f"Welcome, {name} ({role})")
-
-# Main program
-def main():
-    username, role, customer_id = authenticate()
-    if username:"1":
+    if choice == "1":
         acc_num = input("Enter Account Number: ")
         count = count_transactions(acc_num, transactions)
         print(f"Total Transactions for Account {acc_num}: {count}")
